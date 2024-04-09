@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 set -e
-trap "rm -f $tmp_email" EXIT
 
 FILENAME="$VIDEOS/$PROJECTNAME-$(date +%F_%H-%M).mp4"
-
 
 # Make the $STILLS directory if it doesn't exist
 [ -d $STILLS ] || mkdir -p $STILLS
@@ -177,12 +175,5 @@ fi
   stage_5
   echo Stage 6
   stage_6
-  # Report on disk space
-  echo
-  echo --------------------------------------------------------------------------------
-  echo "Disk space"
-  df -h /
-  [ -z $SYSTEMD ] || echo '</pre>'
-} | tee -a $tmp_email
 
 exit 0

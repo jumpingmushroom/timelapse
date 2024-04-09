@@ -2,14 +2,6 @@
 set -e
 trap "rm -f $tmp_email" EXIT
 
-if ! source /home/nobody/app/timelapse_garage.conf;then
-  echo "
-Use /timelapse.conf-template to create an 
-/timelapse.conf file and restart the service.
-"
-  exit 1
-fi
-
 FILENAME="$VIDEOS/$PROJECTNAME-start${START}end$(date +%F_%H-%M).mp4"
 
 

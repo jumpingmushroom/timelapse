@@ -2,7 +2,7 @@
 set -e
 trap "rm -f $tmp_email" EXIT
 
-FILENAME="$VIDEOS/$PROJECTNAME-start${START}end$(date +%F_%H-%M).mp4"
+FILENAME="$VIDEOS/$PROJECTNAME-$(date +%F_%H-%M).mp4"
 
 
 # Make the $STILLS directory if it doesn't exist

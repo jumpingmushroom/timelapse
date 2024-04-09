@@ -7,7 +7,6 @@ services:
       context: .
     environment:
       - PROJECTNAME=timelapse
-      - STARTDATE=date-goes-here
       - FPS=30
       - RTSP_STREAM='rtsp://admin:PASSWORD@ip.add.r.ess:554/cam/url'
     volumes:

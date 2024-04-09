@@ -2,8 +2,6 @@ FROM alpine:3.17
 LABEL maintainer="johnny@jumpingmushroom.com" 
 
 ENV PROJECTNAME=timelapse
-# TODO: Should be auto-generated inside container with ${date} ie.
-ENV STARTDATE=date-goes-here
 ENV FPS=30
 ENV RTSP_STREAM='rtsp://admin:PASSWORD@ip.add.r.ess:554/cam/url'
 

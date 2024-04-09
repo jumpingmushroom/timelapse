@@ -13,3 +13,4 @@ Forked from https://github.com/mcguirepr89/timelapse and rewritten to only run a
 ## TODO
 - Find a way to support multiple camera url's in the same container
 - Add better file management of generated videos
+- User support so UID and GID can be overridden making files written as specified user

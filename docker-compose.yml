@@ -3,17 +3,17 @@ services:
 
   timelapse:
     container_name: timelapse
-    build: 
+    build:
       context: .
     environment:
       - PROJECTNAME=timelapse
       - FPS=30
-      - RTSP_STREAM='rtsp://admin:PASSWORD@ip.add.r.ess:554/cam/url'
+      - RTSP_STREAM=rtsp://admin:PASSWORD@ip.add.r.ess:554/cam/url
     volumes:
       - type: bind
         source: /datapath
         target: /data
-      - type: bind        
+      - type: bind
         source: /etc/localtime
         target: /etc/localtime
       - type: bind

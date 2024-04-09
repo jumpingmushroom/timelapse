@@ -19,7 +19,7 @@ RUN mkdir /app
 COPY timelapse.sh /app
 RUN chmod +x /app/timelapse.sh
 
-COPY crontab /var/spool/cron/crontabs/timelapser
+COPY crontab /var/spool/cron/crontabs/root
 
 VOLUME /data
 

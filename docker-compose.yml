@@ -1,73 +1,23 @@
 version: "3.9"
 services:
+
   timelapse:
     container_name: timelapse
     build: 
       context: .
-      args:
-        user: $USER
+    environment:
+      - PROJECTNAME=timelapse
+      - STARTDATE=date-goes-here
+      - FPS=30
+      - RTSP_STREAM='rtsp://admin:PASSWORD@ip.add.r.ess:554/cam/url'
     volumes:
       - type: bind
-        source: ./videos
-        target: /home/${USER}/videos
-      - type: bind
-        source: ./app
-        target: /home/${USER}/app
-      - type: bind
-        source: ./crontab.example
-        target: /var/spool/cron/crontabs/${USER}
+        source: /mnt/user/cctv/timelapses/front/videos
+        target: /data/videos
       - type: bind        
         source: /etc/localtime
         target: /etc/localtime
       - type: bind
         source: /etc/timezone
         target: /etc/timezone
-    tmpfs:
-      - /home/${USER}/stills
-      - /home/${USER}/assembly
-    networks:
-      - timelapse
     restart: unless-stopped
-
-  caddy:
-    container_name: caddy
-    image: caddy:2.6.2-alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - type: bind
-        source: ./videos
-        target: /var/www/html
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - timelapse
-    depends_on: 
-      - php-fpm
-
-  php-fpm:
-    container_name: php-fpm
-    image: php:7.4-fpm-alpine
-    volumes:
-      - type: bind
-        source: ./videos
-        target: /var/www/html
-      - type: bind
-        source: ./app/timelapse.conf
-        target: /etc/timelapse/timelapse.conf
-    networks:
-      - timelapse
-    restart: unless-stopped
-
-volumes:
-  caddy_data:
-    external: true
-  caddy_config:
-
-networks:
-  timelapse:
-    name: timelapse

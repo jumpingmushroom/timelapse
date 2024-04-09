@@ -2,7 +2,7 @@
 set -e
 trap "rm -f $tmp_email" EXIT
 
-if ! source $HOME/app/timelapse.conf;then
+if ! source /home/nobody/app/timelapse_garage.conf;then
   echo "
 Use /timelapse.conf-template to create an 
 /timelapse.conf file and restart the service.
@@ -10,10 +10,7 @@ Use /timelapse.conf-template to create an
   exit 1
 fi
 
-STILLS="$HOME/stills"
-VIDEOS="$HOME/videos"
-ASSEMBLY="$HOME/assembly"
-FILENAME="$VIDEOS/$TIMELAPSE-start${START}end$(date +%F_%H-%M).mp4"
+FILENAME="$VIDEOS/$PROJECTNAME-start${START}end$(date +%F_%H-%M).mp4"
 
 
 # Make the $STILLS directory if it doesn't exist
@@ -74,7 +71,7 @@ while getopts "hrlfs:S" options;do
     l)  list && exit 1
       ;;
     f)  echo -n "-- Generate FAST timelapse  --  "
-        (ffmpeg -y $FFMPEG_LOGGING -i "$(ls $VIDEOS/${TIMELAPSE}*.mp4 2>/dev/null)" \
+        (ffmpeg -y $FFMPEG_LOGGING -i "$(ls $VIDEOS/${PROJECTNAME}*.mp4 2>/dev/null)" \
           -vf  "setpts=0.05*PTS" $VIDEOS/speedyTimelapse.mp4 \
           && echo COMPLETE) \
           || (echo "NOPE" && exit 1)
@@ -103,16 +100,16 @@ stage_1() {
 
 stage_2() {
 
-  if ls $VIDEOS/$TIMELAPSE* &>/dev/null;then
+  if ls $VIDEOS/$PROJECTNAME* &>/dev/null;then
     echo -n "-- Preparing the cumulative video $(basename $FILENAME) --  "
-    (mv $VIDEOS/$TIMELAPSE*.mp4 $VIDEOS/$TIMELAPSE.mp4 \
+    (mv $VIDEOS/$PROJECTNAME*.mp4 $VIDEOS/$PROJECTNAME.mp4 \
       && echo COMPLETE) \
       || (echo "NOPE" && exit 1)
   else
     echo -n "-- Generating the first timelapse in $VIDEOS --  "
     (ffmpeg -y $FFMPEG_LOGGING -framerate $FPS -pattern_type glob \
       -i "$ASSEMBLY/*.jpg" -c:v libx264 -crf 17 \
-      -pix_fmt yuv420p $VIDEOS/${TIMELAPSE}_tmp.mp4 \
+      -pix_fmt yuv420p $VIDEOS/${PROJECTNAME}_tmp.mp4 \
       && rm -f $ASSEMBLY/*.jpg && echo COMPLETE) \
       || (echo "NOPE" && exit 1)
     exit
@@ -124,7 +121,7 @@ stage_3() {
 
   (ffmpeg -y $FFMPEG_LOGGING -framerate $FPS -pattern_type glob \
     -i "$ASSEMBLY/*.jpg" -c:v libx264 -crf 17 \
-    -pix_fmt yuv420p $ASSEMBLY/${TIMELAPSE}_tmp.mp4 \
+    -pix_fmt yuv420p $ASSEMBLY/${PROJECTNAME}_tmp.mp4 \
     && echo COMPLETE) \
     || (echo "NOPE" && exit 1)
 }
@@ -143,8 +140,8 @@ video  --  "
 
   tmpfile=$(mktemp) || exit 100
   cat <<- EOF > $tmpfile
-	file '$VIDEOS/$TIMELAPSE.mp4'
-	file '$ASSEMBLY/${TIMELAPSE}_tmp.mp4'
+	file '$VIDEOS/$PROJECTNAME.mp4'
+	file '$ASSEMBLY/${PROJECTNAME}_tmp.mp4'
 	EOF
 
   (ffmpeg -y $FFMPEG_LOGGING -f concat -safe 0 \
@@ -157,8 +154,8 @@ video  --  "
 stage_6() {
   echo -n "-- Removing the older videos  --  "
 
-  (rm -f $VIDEOS/$TIMELAPSE.mp4 \
-    rm -f $ASSEMBLY/${TIMELAPSE}_tmp.mp4 \
+  (rm -f $VIDEOS/$PROJECTNAME.mp4 \
+    rm -f $ASSEMBLY/${PROJECTNAME}_tmp.mp4 \
     && echo COMPLETE) \
     || (echo "NOPE" && exit 1)
 }

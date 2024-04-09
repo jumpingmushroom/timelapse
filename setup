@@ -1,4 +1,0 @@
-export uid=$(id -u)
-export gid=$(id -g)
-sudo chown root:root crontab.example
-docker compose up -d
